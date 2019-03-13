@@ -7,18 +7,20 @@ public class Tile {
 
 	//STATIC 
 
-	public static Tile[] tiles = new Tile[100];
+	public static Tile[] tiles = new Tile[256];
 	public static Tile grassTile = new GrassTile(0);
 	public static Tile dirtTile = new DirtTile(1);
 	public static Tile rockTile= new RockTile(2);  //utilizza la classe RockTile per creare un elemento assegnandolo ad un ID, utilizzando gli assert per disegnare mediante il crop della texture.
+	public static Tile sandTile= new SandTile(3);
+	public static Tile waterTile = new WaterTile(4);
 
 
 	//CLASSE
 
-	public static final int TILEWIDTH = 44, TILEHEIGHT = 44;
+	public static final int TILEWIDTH = 48, TILEHEIGHT = 48;
 
 	protected BufferedImage texture;
-	protected final int id;
+	protected  int id;
 	public Tile(BufferedImage texture, int id) {
 		this.texture=texture;
 		this.id=id;
@@ -35,7 +37,7 @@ public class Tile {
 
 	}
 
-	public boolean isSolid() { //setta se un tile può essere attraversato
+	public boolean isSolid() { //setta se un tile puo essere attraversato
 		return false;
 	}
 

@@ -6,7 +6,7 @@ import dev.igpe.theamazingame.Game;
 import dev.igpe.theamazingame.Handler;
 
 public abstract class State {
-
+	
 	private static State currentState =null;
 
 	public static void setState(State state) {

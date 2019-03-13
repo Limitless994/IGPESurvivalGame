@@ -1,97 +1,142 @@
 package dev.igpe.theamazingame.worlds;
 
 import java.awt.Graphics;
+import java.util.List;
 import java.util.Random;
 
+import dev.igpe.theamazingame.Game;
 import dev.igpe.theamazingame.Handler;
-import dev.igpe.theamazingame.launcher;
+import dev.igpe.theamazingame.entities.Entity;
 import dev.igpe.theamazingame.entities.EntityManager;
 import dev.igpe.theamazingame.entities.creatures.Enemy;
-import dev.igpe.theamazingame.entities.creatures.Player;
+import dev.igpe.theamazingame.entities.statics.CopperOre;
+import dev.igpe.theamazingame.entities.statics.IronOre;
+import dev.igpe.theamazingame.entities.statics.Petrol;
 import dev.igpe.theamazingame.entities.statics.Rock;
 import dev.igpe.theamazingame.entities.statics.Tree;
-import dev.igpe.theamazingame.entities.statics.Tree2;
-import dev.igpe.theamazingame.entities.statics.Tree3;
-import dev.igpe.theamazingame.gfx.Assets;
+import dev.igpe.theamazingame.entities.statics.Wall;
+import dev.igpe.theamazingame.entities.statics.turret;
 import dev.igpe.theamazingame.items.ItemManager;
+import dev.igpe.theamazingame.mapgenerator.AssignedEnemy;
+import dev.igpe.theamazingame.mapgenerator.AssignedTile;
+import dev.igpe.theamazingame.mapgenerator.ScenarioGenerator;
 import dev.igpe.theamazingame.states.GameState;
 import dev.igpe.theamazingame.tiles.Tile;
-import dev.igpe.theamazingame.utils.Utils;
 
 public class World {
-
 	private Handler handler;
+
+	//	private static final Random mapSeed = new Random(System.currentTimeMillis());
+
+	//	LayerSetting groundLayerSetting = new LayerSetting(256, 256, 16, 0, mapSeed);
+	//	LayerGenerator groundGenerator = new LayerGenerator(groundLayerSetting);
+	//	private LayerMap groundMap = groundGenerator.doCreate(LayerType.GROUND);
+
+
 	private int width, height;
-	private int spawnX, spawnY;
-	private int k=2; //numero entità da randomizzare
-	
-	
+	private int spawnX=100, spawnY=100;
+	private int k=2; //numero entitï¿½ da randomizzare
+	long lastTurn = System.currentTimeMillis();
 	private int[][] tiles;
+//	private Enemy e;
 	//Entities
-	public static EntityManager entityManager;
+	public EntityManager entityManager;
 	Random random = new Random();
 
 	//ITEM
 	private ItemManager itemManager;
 
-	public World(Handler handler, String path){
+	int randomEnemyNumber =random.nextInt(GameState.numberOfEnemies);
+	public World(Handler handler){
 		this.handler = handler;
-		entityManager = new EntityManager(handler, new Player(handler, 100, 100));
+
+		entityManager = new EntityManager(handler);
 
 		//item
 		itemManager = new ItemManager(handler);
 
+
 		//randomspawn
-		spawnRandom(path);
 
-		loadWorld(path);
-
-		entityManager.getPlayer().setX(spawnX);
-		entityManager.getPlayer().setY(spawnY);
-
+		//spawnEnemyes(randomEnemyNumber);
+		//		loadWorld();
+		//		Game.getPlayer().setX(spawnX);
+		//		Game.getPlayer().setY(spawnY);
 
 	}
 
-	public void spawnRandom(String path) {
 
-		String file = Utils.loadFileAsString(path);
-		String[] tokens = file.split("\\s+");
-
-		//da implementare il resto
-		int randomStaticENumber = random.nextInt(GameState.numberOfStatics); //randomizza il numero di statics
-		int randomEnemyNumber =random.nextInt(GameState.numberOfEnemyes);
-
-		for(int i=0;i<=randomStaticENumber;i++) {
-
-			int spawnTreeX = random.nextInt((Assets.getWidth())* (Utils.parseInt(tokens[2])));
-			int spawnTreeY = random.nextInt((Assets.getHeight())* (Utils.parseInt(tokens[2])));
-			//			System.out.println("TOKENS1 = " + tokens[1]);
-
-			if(!(getTile(spawnTreeX, spawnTreeY).isSolid())) {
-				k=random.nextInt(3);
-
-				if(k==1)	entityManager.addEntity(new Rock(handler, spawnTreeX, spawnTreeY));
-				else entityManager.addEntity(new Tree(handler, spawnTreeX, spawnTreeY));
+	private void spawnEnemies() {
+		List<AssignedEnemy> assignedEnemyList = Game.getSenarioManager().getScenario().getAssignedEnemyList();
+		for (AssignedEnemy assignedEnemy : assignedEnemyList) {
+			if (getTile(assignedEnemy.getX(), assignedEnemy.getY()) != Tile.rockTile) {
+				Enemy enemy = new Enemy(handler, assignedEnemy.getX(), assignedEnemy.getY());
+				entityManager.addEntity(enemy);
 			}
 		}
-		if(randomEnemyNumber!=0) {
-			for(int i=0;i<=randomEnemyNumber;i++) {
-				int spawnEnemyX = random.nextInt((Assets.getWidth())* (Utils.parseInt(tokens[2]))); //assets.getHeight= 32* (token[0] del file World.txt) 100 poiché le tile sono comprese tra 
-				int spawnEnemyY = random.nextInt((Assets.getHeight())* (Utils.parseInt(tokens[3])));  //100*32 pixels, sia per x che per y.
-				if((this.getTile(spawnEnemyX, spawnEnemyY))!=Tile.rockTile
-						&&this.entityManager.getPlayer().getX()!=spawnEnemyX
-						&&this.entityManager.getPlayer().getY()!=spawnEnemyY) 
-					entityManager.addEntity(new Enemy(handler, spawnEnemyX, spawnEnemyY));
-			}	
+		
+		
+		//da implementare il resto
 
-		}
+
+//		if(numberOfEnemyes!=0) {
+//			for(int i=0;i<=numberOfEnemyes;i++) {
+//				int spawnEnemyX = random.nextInt((Assets.getWidth())* 128); //assets.getHeight= 32* (token[0] del file World.txt) 100 poichï¿½ le tile sono comprese tra 
+//				int spawnEnemyY = random.nextInt((Assets.getHeight())* 128 );  //100*32 pixels, sia per x che per y.
+//				if((this.getTile(spawnEnemyX, spawnEnemyY))!=Tile.rockTile
+//						//						&&Game.getPlayer().getX()!=spawnEnemyX
+//						//						&&Game.getPlayer().getY()!=spawnEnemyY
+//						) 
+//					e= new Enemy(handler, spawnEnemyX, spawnEnemyY);
+//				entityManager.addEntity(e);
+//
+//			}	
+//
+//		}
 
 	}
+
+
+
 	public void tick(){
 		itemManager.tick();
 		entityManager.tick();
 
+		if (System.currentTimeMillis() - lastTurn >= 60000) {
+			spawnEnemies();
+			lastTurn = System.currentTimeMillis();
+		}
+
+		if(handler.getGame().getPlayer().getCraftMenu().isCraftObW()) {
+			craftWall();
+
+		}
+		else if(handler.getGame().getPlayer().getCraftMenu().isCraftObT()) {
+			craftTurret();
+
+		}
+
+		//Funzione Mondo Rotondo
+		//				if(handler.getGame().getPlayer().getX()>Tile.TILEWIDTH*Game.getSenarioManager().getScenario().getWidth()/2) handler.getGame().getPlayer().setX(0); //Tile.TILEWIDTH*getGroundMap().getWidth() massima dimensione della mappa
+		//				if(handler.getGame().getPlayer().getX()<0) handler.getGame().getPlayer().setX(Tile.TILEWIDTH*Game.getSenarioManager().getScenario().getWidth()/2);
+		//				if(handler.getGame().getPlayer().getY()>Tile.TILEWIDTH*Game.getSenarioManager().getScenario().getHeight()/2) handler.getGame().getPlayer().setY(0);
+		//				if(handler.getGame().getPlayer().getY()<0) handler.getGame().getPlayer().setY(Tile.TILEWIDTH*Game.getSenarioManager().getScenario().getHeight()/2);
+
+
 	}
+
+	public void craftWall() {
+
+		int x=(handler.getMouseManager().getMouseX()+(int)handler.getGameCamera().getxOffset())/Tile.TILEWIDTH;
+		int y = (handler.getMouseManager().getMouseY()+(int)handler.getGameCamera().getyOffset())/Tile.TILEHEIGHT;
+		entityManager.addEntity(new Wall(handler,x*48, y*48));
+	}
+	public void craftTurret() {
+		int x=(handler.getMouseManager().getMouseX()+(int)handler.getGameCamera().getxOffset())/Tile.TILEWIDTH;
+		int y = (handler.getMouseManager().getMouseY()+(int)handler.getGameCamera().getyOffset())/Tile.TILEHEIGHT;
+		entityManager.addEntity(new turret(handler,x*48, y*48));
+	}
+
 
 	public void render(Graphics g){
 		int xStart = (int) Math.max(0, handler.getGameCamera().getxOffset() / Tile.TILEWIDTH);
@@ -105,11 +150,22 @@ public class World {
 						(int) (y * Tile.TILEHEIGHT - handler.getGameCamera().getyOffset()));
 			}
 		}
+
 		//Item
 		itemManager.render(g);
 
+
+
 		//Entities
-		entityManager.render(g);
+		for(Entity e: entityManager.getEntities()) {
+			if(Math.abs(e.getX()-handler.getGame().getPlayer().getX())<=1750 && Math.abs(e.getY()-handler.getGame().getPlayer().getY())<=1750) {
+				e.render(g);
+			}
+
+		}
+
+		//Inventari
+		handler.getGame().getPlayer().postRender(g);
 	}
 
 	public Tile getTile(int x, int y){
@@ -118,25 +174,44 @@ public class World {
 
 		Tile t = Tile.tiles[tiles[x][y]];
 		if(t == null)
-			return Tile.dirtTile;
+			return Tile.grassTile;
 		return t;
 	}
+	public void loadWorld(){
 
-	private void loadWorld(String path){
-		String file = Utils.loadFileAsString(path);
-		String[] tokens = file.split("\\s+");
-		width = Utils.parseInt(tokens[0]);
-		height = Utils.parseInt(tokens[1]);
-		spawnX = Utils.parseInt(tokens[2]);
-		spawnY = Utils.parseInt(tokens[3]);
-		
-		tiles = new int[width][height];
-		for(int y = 0;y < height;y++){
-			for(int x = 0;x < width;x++){
-				tiles[x][y] = Utils.parseInt(tokens[(x + y * width) + 4]);
+		width = 128;
+		height = 128;
+		spawnX = 100;
+		spawnY = 100;
+
+		tiles = ScenarioGenerator.generateTiles(Game.getSenarioManager().getScenario().getWidth(), 
+				Game.getSenarioManager().getScenario().getHeight(), Game.getSenarioManager().getScenario().getMap());
+
+		List<AssignedTile> assignedTileList = Game.getSenarioManager().getScenario().getAssignedTileList();
+		for (AssignedTile assignedTile : assignedTileList) {
+			switch(assignedTile.getTile()) {
+			case 1:
+				entityManager.addEntity(new Tree(handler, assignedTile.getX()*Tile.TILEWIDTH-32, assignedTile.getY()*Tile.TILEHEIGHT-64));
+				break;
+			case 2:
+				entityManager.addEntity(new Rock(handler, assignedTile.getX()*Tile.TILEWIDTH, assignedTile.getY()*Tile.TILEHEIGHT));
+				break;
+			case 3:
+				entityManager.addEntity(new IronOre(handler, assignedTile.getX()*Tile.TILEWIDTH, assignedTile.getY()*Tile.TILEHEIGHT));
+				break;
+			case 4:
+				entityManager.addEntity(new CopperOre(handler, assignedTile.getX()*Tile.TILEWIDTH, assignedTile.getY()*Tile.TILEHEIGHT));
+				break;
+			case 5:
+				entityManager.addEntity(new Petrol(handler, assignedTile.getX()*Tile.TILEWIDTH, assignedTile.getY()*Tile.TILEHEIGHT));
+				break;
 			}
 		}
+		
+		spawnEnemies();
+
 	}
+
 
 	public int getWidth(){
 		return width;
@@ -149,6 +224,16 @@ public class World {
 	public EntityManager getEntityManager() {
 		return entityManager;
 	}
+
+	public int[][] getTiles() {
+		return tiles;
+	}
+
+
+	public void setTiles(int[][] tiles) {
+		this.tiles = tiles;
+	}
+
 
 	public Handler getHandler() {
 		return handler;
@@ -165,5 +250,9 @@ public class World {
 	public void setItemManager(ItemManager itemManager) {
 		this.itemManager = itemManager;
 	}
+
+
+
+
 
 }

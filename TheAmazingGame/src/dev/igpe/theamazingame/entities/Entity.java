@@ -4,18 +4,23 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import dev.igpe.theamazingame.Handler;
+import dev.igpe.theamazingame.audio.AudioPlayer;
+import dev.igpe.theamazingame.inventory.Inventory;
+import dev.igpe.theamazingame.items.weapons.Weapon;
+import dev.igpe.theamazingame.worlds.World;
 
 public abstract class Entity {
-	
+
 	public static final int DEFAULT_HEALTH=100;
-	
-	protected static Handler handler;
+
+	protected Handler handler;
 	protected int health;
 	protected float x, y;
 	protected int width, height;
 	protected Rectangle bounds;
-	
+
 	protected boolean active=true;
+	
 	
 	public Entity(Handler handler, float x, float y, int width, int height){
 		this.handler = handler;
@@ -24,27 +29,29 @@ public abstract class Entity {
 		this.width = width;
 		this.height = height;
 		health=DEFAULT_HEALTH;
-		
+
 		bounds = new Rectangle(0, 0, width, height);
-		
+
 	}
-	
+
 	public abstract void die();
-	
+
 	public void hurt(int amt) {
+		
 		health -=amt;
-		//se la vita va sotto lo 0 l'entità deve morire o scomparire
+		//se la vita va sotto lo 0 l'entitï¿½ deve morire o scomparire
 		if(health<=0) {
 			active = false;
+		
 			die();
 		}
 		
 	}
-	
+
 	public abstract void tick();
-	
+
 	public abstract void render(Graphics g);
-	
+
 	public boolean checkEntityCollisions(float xOffset, float yOffset){
 		for(Entity e : handler.getWorld().getEntityManager().getEntities()){
 			if(e.equals(this))
@@ -54,7 +61,7 @@ public abstract class Entity {
 		}
 		return false;
 	}
-	
+
 	public Rectangle getCollisionBounds(float xOffset, float yOffset){
 		return new Rectangle((int) (x + bounds.x + xOffset), (int) (y + bounds.y + yOffset), bounds.width, bounds.height);
 	}
@@ -106,6 +113,11 @@ public abstract class Entity {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	
-	
+
+	public boolean isEnemy() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 }

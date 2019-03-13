@@ -10,7 +10,7 @@ public class RockTile extends Tile{
 	}
 	@Override
 	public boolean isSolid() {
-		return true;//CONTROLLARE INTERSECT
+		return false;//CONTROLLARE INTERSECT
 	}
 	
 }

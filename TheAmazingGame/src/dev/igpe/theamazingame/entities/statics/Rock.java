@@ -13,7 +13,7 @@ public class Rock extends StaticEntity {
 
 	public Rock(Handler handler, float x, float y) {
 		super(handler, x, y, Tile.TILEWIDTH, Tile.TILEHEIGHT);
-		
+
 		bounds.x = 3;
 		bounds.y = (int) (height / 2f);
 		bounds.width = width - 16;
@@ -21,25 +21,24 @@ public class Rock extends StaticEntity {
 	}
 
 	@Override
-	   public void die() {
-			handler.getWorld().getItemManager().addItem(ItemList.rockItem.createNew((int)x,(int) y));
-			
-		}
+	public void die() {
+		handler.getWorld().getItemManager().addItem(ItemList.rockItem.createNew((int)x,(int) y));
+
+	}
 
 	@Override
 	public void tick() {
-	
+
 	}
 
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(Assets.rock1, (int) (x - handler.getGameCamera().getxOffset()), (int) (y - handler.getGameCamera().getyOffset()), (int)(width*0.8),(int) (height*0.8)
-				, null);
-//		g.setColor(Color.red);
-//		g.fillRect((int)(x +bounds.x - handler.getGameCamera().getxOffset()),(int) (y +bounds.y - handler.getGameCamera().getyOffset()), (int)(width*0.8),(int) (height*0.8));
+		g.drawImage(Assets.rock1, (int) (x - handler.getGameCamera().getxOffset()), (int) (y - handler.getGameCamera().getyOffset()), (int)(width*0.8),(int) (height*0.8), null);
+		//		g.setColor(Color.red);
+		//		g.fillRect((int)(x +bounds.x - handler.getGameCamera().getxOffset()),(int) (y +bounds.y - handler.getGameCamera().getyOffset()), (int)(width*0.8),(int) (height*0.8));
 
-		
+
 	}
-	
+
 
 }

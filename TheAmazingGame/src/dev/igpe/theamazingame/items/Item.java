@@ -3,9 +3,12 @@ package dev.igpe.theamazingame.items;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+import dev.igpe.theamazingame.Game;
 import dev.igpe.theamazingame.Handler;
+import dev.igpe.theamazingame.craftinterface.CraftMenu;
 import dev.igpe.theamazingame.entities.creatures.Player;
 import dev.igpe.theamazingame.gfx.Assets;
 import dev.igpe.theamazingame.inventory.Inventory;
@@ -14,15 +17,27 @@ public class Item {
 	
 	// Handler
 	
+	public static Item[] getItems() {
+		return items;
+	}
+
+	public static void setItems(Item[] items) {
+		Item.items = items;
+	}
+
 	public static Item[] items = new Item[256];
 
 	//ITEM
 	
 	//risorse
-	Item woodItem = ItemList.getWoodItem();
-	Item rockItem = ItemList.getRockItem();
+	public Item woodItem = ItemList.getWoodItem();
+	public Item rockItem = ItemList.getRockItem();
+	
 	//ammo
-	Item bulletItem = ItemList.getBulletItem();
+	public Item bulletItem = ItemList.getBulletItem();
+	
+	//Weapons
+	public Item gunItem = ItemList.getGunItem();
 	
 	
 	// Class
@@ -32,7 +47,7 @@ public class Item {
 	protected Handler handler;
 	protected BufferedImage texture;
 	protected String name;
-	protected final int id;
+	protected int id;
 	
 	protected Rectangle bounds;
 	
@@ -51,12 +66,12 @@ public class Item {
 	}
 	
 	public void tick(){
-		if(handler.getWorld().getEntityManager().getPlayer().getCollisionBounds(0f	, 0f).intersects(bounds)) {
+		if(handler.getGame().getPlayer().getCollisionBounds(0f	, 0f).intersects(bounds)) {
 			pickedUp= true;
 			
-			handler.getWorld().getEntityManager().getPlayer().getInventory().addItem(this);
+			handler.getGame().getPlayer().getInventory().addItem(this);
+
 		}
-		
 		
 	}
 	
@@ -159,6 +174,10 @@ public class Item {
 		this.count = count;
 	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -170,6 +189,29 @@ public class Item {
 	public void setPickedUp(boolean pickedUp) {
 		this.pickedUp = pickedUp;
 	}
+
+	public Item getBulletItem() {
+		return bulletItem;
+	}
+
+	public void setBulletItem(Item bulletItem) {
+		this.bulletItem = bulletItem;
+	}
+
+	public Item getWoodItem() {
+		return woodItem;
+	}
+
+	public void setWoodItem(Item woodItem) {
+		this.woodItem = woodItem;
+	}
+
+	public int getFireRange() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	
 	
 
 }

@@ -13,13 +13,13 @@ public class Tree extends StaticEntity {
 
 
 	public Tree(Handler handler, float x, float y) {
-		super(handler, x, y, Tile.TILEWIDTH*2, Tile.TILEHEIGHT*2);
+		super(handler, x, y, 88,88);
 		
 		
-		bounds.x = 29;
-		bounds.y = 48;
-		bounds.width = 6;
-		bounds.height = 6;
+		bounds.x = 38;
+		bounds.y = 64;
+		bounds.width = 12;
+		bounds.height = 12;
 	}
 
 	@Override

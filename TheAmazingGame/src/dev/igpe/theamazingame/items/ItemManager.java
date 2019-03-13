@@ -22,7 +22,7 @@ public class ItemManager {
 			Item i = it.next();
 			i.tick();
 			if(i.isPickedUp() )
-				//lo mette nell'inventario che è una lista
+				//lo mette nell'inventario che e' una lista
 				it.remove();
 		}
 	}
@@ -46,6 +46,14 @@ public class ItemManager {
 
 	public void setHandler(Handler handler) {
 		this.handler = handler;
+	}
+
+	public ArrayList<Item> getItems() {
+		return items;
+	}
+
+	public void setItems(ArrayList<Item> items) {
+		this.items = items;
 	}
 
 }
